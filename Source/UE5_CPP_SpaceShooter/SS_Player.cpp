@@ -89,6 +89,24 @@ void ASS_Player::Tick(float DeltaTime)
 	{
 		this->SetActorRotation(FRotator(Current_Rotation));
 	}
+
+	if (this->GetActorLocation().X > Field_Width)
+	{
+		Current_Location = FVector(Field_Width - 1, Current_Location.Y, Current_Location.Z);
+	}
+	if (this->GetActorLocation().X < -Field_Width)
+	{
+		Current_Location = FVector(-Field_Width + 1, Current_Location.Y, Current_Location.Z);
+	}
+
+	if (this->GetActorLocation().Y > Field_Height)
+	{
+		Current_Location = FVector(Current_Location.X, Field_Height -1, Current_Location.Z);
+	}
+	if (this->GetActorLocation().Y < -Field_Height)
+	{
+		Current_Location = FVector(Current_Location.X, -Field_Height +1, Current_Location.Z);
+	}
 }
 
 // Called to bind functionality to input
