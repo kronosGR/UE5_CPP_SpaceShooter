@@ -76,6 +76,19 @@ void ASS_Player::Tick(float DeltaTime)
 		this->SetActorLocation(New_Location);
 		Current_Location = New_Location;
 	}
+
+	if (Current_Y_Velocity > 0.1f)
+	{
+		this->SetActorRotation(FRotator(Current_Rotation.Pitch + 45.0f, Current_Rotation.Yaw, Current_Rotation.Roll));
+	}
+	else if (Current_Y_Velocity < -0.1f)
+	{
+		this->SetActorRotation(FRotator(Current_Rotation.Pitch + 45.0f, Current_Rotation.Yaw, Current_Rotation.Roll));
+	}
+	else
+	{
+		this->SetActorRotation(FRotator(Current_Rotation));
+	}
 }
 
 // Called to bind functionality to input
