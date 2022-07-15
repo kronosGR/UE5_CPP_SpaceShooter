@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Projectile.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Pawn.h"
 #include "SS_Player.generated.h"
@@ -35,19 +36,19 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float Field_Width;
-	
+
 	UPROPERTY(EditAnywhere)
 	float Field_Height;
-	
+
 	UPROPERTY(BlueprintReadOnly)
 	float Max_Health;
-	
+
 	UPROPERTY(BlueprintReadOnly)
 	float Current_Health;
-	
+
 	UPROPERTY(BlueprintReadOnly)
 	float Max_Armor;
-	
+
 	UPROPERTY(BlueprintReadOnly)
 	float Current_Armor;
 
@@ -57,7 +58,7 @@ public:
 	void FireWeapon();
 	void StartFiring();
 	void StopFiring();
-	
+
 
 	UPROPERTY(EditAnywhere)
 	float MaxVelocity;
@@ -72,7 +73,7 @@ public:
 	float Current_X_Velocity;
 	float Current_Y_Velocity;
 
-	
+
 	UPROPERTY(BlueprintReadOnly)
 	float PlayerScore;
 
@@ -83,21 +84,20 @@ public:
 	UFUNCTION()
 	void OnBeginOverlap(AActor* PlayerActor, AActor* OtherActor);
 
-	
-	// UPROPERTY(EditAnywhere)
-	// TSubclassOf<AProjectile> WeaponProjectile_BP;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AProjectile> WeaponProjectile_BP;
 
 	void CollectablePickUp();
-	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 };

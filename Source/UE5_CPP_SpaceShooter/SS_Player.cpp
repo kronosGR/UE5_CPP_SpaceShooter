@@ -101,12 +101,23 @@ void ASS_Player::Tick(float DeltaTime)
 
 	if (this->GetActorLocation().Y > Field_Height)
 	{
-		Current_Location = FVector(Current_Location.X, Field_Height -1, Current_Location.Z);
+		Current_Location = FVector(Current_Location.X, Field_Height - 1, Current_Location.Z);
 	}
 	if (this->GetActorLocation().Y < -Field_Height)
 	{
-		Current_Location = FVector(Current_Location.X, -Field_Height +1, Current_Location.Z);
+		Current_Location = FVector(Current_Location.X, -Field_Height + 1, Current_Location.Z);
 	}
+
+	if (bIsFiring)
+	{
+		if (TimeSinceLastShot > WeaponFireRate)
+		{
+			FireWeapon();
+			TimeSinceLastShot = 0.0f;
+		}
+	}
+
+	TimeSinceLastShot += DeltaTime;
 }
 
 // Called to bind functionality to input
@@ -116,9 +127,9 @@ void ASS_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASS_Player::MoveRight);
 	PlayerInputComponent->BindAxis("MoveUp", this, &ASS_Player::MoveUp);
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ASS_Player::FireWeapon);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ASS_Player::StartFiring);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ASS_Player::StopFiring);
 }
-
 
 void ASS_Player::MoveRight(float AxisValue)
 {
@@ -130,16 +141,22 @@ void ASS_Player::MoveUp(float AxisValue)
 	Current_Y_Velocity = MaxVelocity * AxisValue;
 }
 
-void ASS_Player::FireWeapon()
-{
-}
-
 void ASS_Player::StartFiring()
 {
+	bIsFiring = true;
 }
 
 void ASS_Player::StopFiring()
 {
+	bIsFiring = false;
+}
+
+void ASS_Player::FireWeapon()
+{
+	FActorSpawnParameters Params = {};
+	Params.Owner = this;
+
+	AActor* SpawnProjectile = GetWorld()->SpawnActor(WeaponProjectile_BP, &Current_Location, &Current_Rotation, Params);
 }
 
 void ASS_Player::OnBeginOverlap(AActor* PlayerActor, AActor* OtherActor)

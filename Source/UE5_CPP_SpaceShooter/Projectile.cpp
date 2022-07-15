@@ -44,5 +44,5 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::OnBeginOverlap(AActor* ProjectileActor, AActor* OtherActor)
 {
-	Destroy();
+	
 }
