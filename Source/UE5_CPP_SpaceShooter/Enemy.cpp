@@ -61,6 +61,22 @@ void AEnemy::Tick(float DeltaTime)
 
 	CurrentLocation.Y += FMath::Sin(TotalTime + RandomStart);
 	this->SetActorLocation(CurrentLocation - (CurrentVelocity * DeltaTime));
+
+	// shooting
+	if (TimeSinceLastShot >= 1.f && !bHit)
+	{
+		if (fBustDelay >= 0.15)
+		{
+			FActorSpawnParameters Parameters = {};
+			Parameters.Owner = this;
+
+			GetWorld()->SpawnActor(EnemyProjectile, &CurrentLocation, &CurrentRotation, Parameters);
+
+			fBustDelay = 0.f;
+		}
+		TimeSinceLastShot = 0.f;
+		fBustDelay += DeltaTime;
+	}
 }
 
 // Called to bind functionality to input
