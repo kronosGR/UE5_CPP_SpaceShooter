@@ -21,9 +21,10 @@ AEnemy::AEnemy()
 
 	CollisionComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	StaticMeshComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	ExplosionFX->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
+	ExplosionFX->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	ExplosionSound->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	
+
+	fBustDelay = 0.15f;
 }
 
 
@@ -31,12 +32,35 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TotalTime = 0.0f;
+	TimeSinceLastShot = 0.f;
+	bHit = false;
+	bDestroy = false;
+	fDestroyTime = 1.f;
+	ExplosionFX->Deactivate();
+	ExplosionSound->Deactivate();
+
+	ThisWorld = GetWorld();
+
+	RandomStart = FMath::Rand();
+
+	OnActorBeginOverlap.AddDynamic(this, &AEnemy::OnBeginOverlap);
 }
 
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	TotalTime += DeltaTime;
+	TimeSinceLastShot += DeltaTime;
+
+	CurrentLocation = this->GetActorLocation();
+	CurrentRotation = this->GetActorRotation();
+
+	CurrentLocation.Y += FMath::Sin(TotalTime + RandomStart);
+	this->SetActorLocation(CurrentLocation - (CurrentVelocity * DeltaTime));
 }
 
 // Called to bind functionality to input
