@@ -77,6 +77,19 @@ void AEnemy::Tick(float DeltaTime)
 		TimeSinceLastShot = 0.f;
 		fBustDelay += DeltaTime;
 	}
+
+	if (bDestroy) this->Destroy();
+	if (bHit)
+	{
+		StaticMeshComponent->SetVisibility(false);
+		this->SetActorEnableCollision(false);
+		ExplosionFX->Activate();
+		ExplosionSound->Activate();
+
+		fDestroyTime -= DeltaTime;
+	}
+
+	if (fDestroyTime < 0.f) this->Destroy();
 }
 
 // Called to bind functionality to input
@@ -87,4 +100,18 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AEnemy::OnBeginOverlap(AActor* EnemyActor, AActor* OtherActor)
 {
+	if (OtherActor->ActorHasTag("Bounds"))
+	{
+		bDestroy = true;
+	}
+
+	if (OtherActor->ActorHasTag("Asteroid") || OtherActor->ActorHasTag("Player"))
+	{
+		bHit = true;
+	}
+
+	if (OtherActor->ActorHasTag("Projectile"))
+	{
+		if (ThisWorld) bDestroy = true;
+	}
 }
