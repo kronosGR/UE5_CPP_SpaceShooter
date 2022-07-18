@@ -112,6 +112,17 @@ void AEnemy::OnBeginOverlap(AActor* EnemyActor, AActor* OtherActor)
 
 	if (OtherActor->ActorHasTag("Projectile"))
 	{
-		if (ThisWorld) bDestroy = true;
+		bHit = true;
+		if (ThisWorld)
+		{
+			if (FMath::RandRange(0, 10) > 7)
+			{
+				FVector Current_Location = this->GetActorLocation();
+				FRotator Current_Rotation = this->GetActorRotation();
+				FActorSpawnParameters Params = {};
+
+				ThisWorld->SpawnActor(PickupCan, &Current_Location, &Current_Rotation, Params);
+			}
+		}
 	}
 }

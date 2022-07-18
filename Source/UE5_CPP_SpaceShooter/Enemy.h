@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PickUp.h"
 #include "Projectile.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Pawn.h"
@@ -34,8 +35,8 @@ public:
 
 	UWorld* ThisWorld;
 
-	// UPROPERTY(EditAnywhere)
-	// TSubclassOf<APickUp> PickupCan;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<APickUp> PickupCan;
 
 	UPROPERTY(EditAnywhere)
 	FVector CurrentVelocity;
