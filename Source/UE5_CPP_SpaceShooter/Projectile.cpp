@@ -3,6 +3,8 @@
 
 #include "Projectile.h"
 
+#include "SS_Player.h"
+
 // Sets default values
 AProjectile::AProjectile()
 {
@@ -40,9 +42,39 @@ void AProjectile::Tick(float DeltaTime)
 
 	this->SetActorLocation(NewLocation);
 	CurrentLocation = NewLocation;
+
+	if (bHit) this->Destroy();
 }
 
 void AProjectile::OnBeginOverlap(AActor* ProjectileActor, AActor* OtherActor)
 {
-	
+	if (OtherActor != nullptr)
+	{
+		ASS_Player* OwningPlayer = Cast<ASS_Player>(this->GetOwner());
+		if (OtherActor->ActorHasTag(FName("Bounds")))
+		{
+			bHit = true;
+		}
+
+		if (this->ActorHasTag(FName("EnemyProjectile")) && OtherActor->ActorHasTag(FName("Player")))
+		{
+			bHit = true;
+		}
+
+		if (OtherActor->ActorHasTag(FName("EnemyShip")))
+		{
+			if (OwningPlayer)
+				OwningPlayer->PlayerScore += 50.f;
+
+			bHit = true;
+		}
+		
+		if (OtherActor->ActorHasTag(FName("Asteroid")))
+		{
+			if (OwningPlayer)
+				OwningPlayer->PlayerScore += 10.f;
+
+			bHit = true;
+		}
+	}
 }
