@@ -65,16 +65,75 @@ void AHazard::Tick(float DeltaTime)
 
 	this->SetActorRotation(FRotator(Initial_Rotation * 100.f, Initial_Rotation * 50.f, 0.f));
 	this->SetActorLocation(FVector(Initial_X_Locaion, Initial_Y_Location, 0.f));
+
+	if (SelfDestructTime <= 0.f) this->Destroy();
+
+	if (bHit)
+	{
+		bHit = false;
+		bStartDestroyTimer = true;
+
+		AsteroidExplosionFX->Activate();
+		AsteroidExplosionFX->SetWorldLocation(this->GetActorLocation());
+		AsteroidExplosionFX->SetWorldScale3D(FVector(1.f, 1.f, 1.f));
+
+		AsteroidExplosionSound->Activate();
+		AsteroidExplosionSound->Play();
+
+		this->StaticMesh->SetVisibility(false);
+		this->SetActorEnableCollision(false);
+
+		if (this->GetActorScale3D().X > 6.f)
+		{
+			SpawnChildren(FMath::RandRange(3, 5));
+		}
+	}
+
+	if (bStartDestroyTimer)SelfDestructTime -= DeltaTime;
 }
 
 void AHazard::SpawnChildren(int32 NumChildren)
 {
+	FActorSpawnParameters Params = {};
+	Params.Owner = this;
+
+	for (int i = 0; i < NumChildren; i++)
+	{
+		if (ChildSpawn != nullptr)
+		{
+			AHazard* NewHazard = Cast<AHazard>(GetWorld()->SpawnActor(
+				ChildSpawn, new FVector(this->GetActorLocation()),
+				new FRotator(this->GetActorRotation()), Params));
+
+			NewHazard->Initial_X_Locaion = this->GetActorLocation().X;
+			NewHazard->Initial_Y_Location = this->GetActorLocation().Y;
+
+			NewHazard->SetHazardVelocity(FVector(FMath::RandRange(-250, 100), FMath::RandRange(50, 50), 0.f));
+			float RandScale = FMath::RandRange(2, 5);
+
+			NewHazard->SetActorScale3D(FVector(RandScale, RandScale, RandScale));
+
+			NewHazard->SetActorEnableCollision(true);
+			NewHazard->StaticMesh->SetVisibility(true);
+		}
+	}
 }
 
 void AHazard::SetHazardVelocity(FVector NewVelocity)
 {
+	Spawn_X_Velocity = NewVelocity.X;
+	Spawn_Y_Velocity = NewVelocity.Y;
 }
 
 void AHazard::OnBeginOverlap(AActor* AsteroidActor, AActor* OtherActor)
 {
+	if (OtherActor->ActorHasTag("Bounds"))
+	{
+		SelfDestructTime = 0.f;
+	}
+
+	if (OtherActor->ActorHasTag("Projectile") || OtherActor->ActorHasTag("Player"))
+	{
+		bHit = true;
+	}
 }
