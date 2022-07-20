@@ -81,6 +81,13 @@ void ASS_GameMode::Tick(float DeltaSeconds)
 			}
 		}
 	}
+
+	if(bPlayerDead)
+	{
+		Restart_Widget->SetVisibility(ESlateVisibility::Visible);
+		PC_Ref->bShowMouseCursor = true;
+		bPlayerDead = false;
+	}
 }
 
 TSubclassOf<AHazard> ASS_GameMode::GetHazardTemplate()

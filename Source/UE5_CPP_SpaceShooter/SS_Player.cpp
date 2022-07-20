@@ -4,7 +4,9 @@
 #include "SS_Player.h"
 
 #include "NavigationSystemTypes.h"
+#include "SS_GameMode.h"
 #include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
@@ -118,6 +120,20 @@ void ASS_Player::Tick(float DeltaTime)
 	}
 
 	TimeSinceLastShot += DeltaTime;
+
+	if (bHit)
+	{
+		bDead = true;
+		this->ShipMesh->SetVisibility(false);
+		this->ParticleSystem->SetVisibility(false);
+		this->ExplosionFX->Activate();
+		this->DeathExplosionSound->Activate();
+		this->DeathExplosionSound->Play();
+
+		this->SetActorTickEnabled(false);
+		ASS_GameMode* GameModeREF = Cast<ASS_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		GameModeREF->bPlayerDead = true;
+	}
 }
 
 // Called to bind functionality to input
@@ -161,8 +177,54 @@ void ASS_Player::FireWeapon()
 
 void ASS_Player::OnBeginOverlap(AActor* PlayerActor, AActor* OtherActor)
 {
+	if (OtherActor->ActorHasTag("Asteroid") || OtherActor->ActorHasTag("EnemyShip"))
+	{
+		if (Current_Armor > 0.f)
+		{
+			Current_Armor -= 10.f;
+			if (Current_Armor < 0.f) Current_Armor = 0.f;
+		}
+		else if (Current_Health > 0.f)
+		{
+			Current_Health -= 10.f;
+			if (Current_Health <= 0.f)
+			{
+				Current_Health = 0.f;
+				bHit = true;
+			}
+		}
+	}
+
+	if (OtherActor->ActorHasTag("EnemyProjectile"))
+	{
+		if (Current_Armor > 0.f)
+		{
+			Current_Armor -= 25.f;
+			if (Current_Armor < 0.f) Current_Armor = 0.f;
+		}
+		else if (Current_Health > 0.f)
+		{
+			Current_Health -= 25.f;
+			if (Current_Health <= 0.f)
+			{
+				Current_Health = 0.f;
+				bHit = true;
+			}
+		}
+	}
 }
 
 void ASS_Player::CollectablePickUp()
 {
+	if (Current_Armor < 100.f && Current_Health)
+	{
+		Current_Armor += 10.f;
+
+		if (Current_Armor > 100.f) Current_Armor = 100.f;
+	}
+	else if (Current_Health < 100.f)
+	{
+		Current_Health += 10.f;
+		if (Current_Health > 100.f) Current_Health = 100.f;
+	}
 }
