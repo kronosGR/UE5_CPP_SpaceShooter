@@ -6,6 +6,7 @@
 #include "Enemy.h"
 #include "Hazard.h"
 #include "GameFramework/GameMode.h"
+#include "Blueprint/UserWidget.h"
 #include "SS_GameMode.generated.h"
 
 /**
@@ -49,4 +50,21 @@ protected:
 	FRotator AsteroidSpawnRot;
 
 	UWorld* ThisWorld;
+
+	UPROPERTY(EditAnywhere, Category="HUD Elements")
+	TSubclassOf<UUserWidget> Score_Widget_Class;
+
+	UUserWidget* Score_Widget;
+
+	UPROPERTY(EditAnywhere, Category="HUD Elements")
+	TSubclassOf<UUserWidget> Shield_And_Armor_Widget_Class;
+
+	UUserWidget* Shield_Armor_Widget;
+
+	UPROPERTY(EditAnywhere, Category="HUD Elements")
+	TSubclassOf<UUserWidget> Restart_Widget_Class;
+
+	UUserWidget* Restart_Widget;
+
+	APlayerController* PC_Ref;
 };

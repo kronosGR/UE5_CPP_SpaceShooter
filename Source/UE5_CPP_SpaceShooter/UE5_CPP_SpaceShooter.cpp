@@ -3,4 +3,4 @@
 #include "UE5_CPP_SpaceShooter.h"
 #include "Modules/ModuleManager.h"
 
-IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, UE5_CPP_SpaceShooter, "UE5_CPP_SpaceShooter" );
+IMPLEMENT_PRIMARY_GAME_MODULE(FDefaultGameModuleImpl, UE5_CPP_SpaceShooter, "UE5_CPP_SpaceShooter");

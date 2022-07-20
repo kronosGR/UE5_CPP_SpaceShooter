@@ -24,6 +24,26 @@ void ASS_GameMode::BeginPlay()
 
 	MusicTrack->Play();
 	bPlayerDead = false;
+
+	if (Score_Widget_Class != nullptr)
+	{
+		Score_Widget = CreateWidget<UUserWidget>(GetWorld(),Score_Widget_Class);
+		Score_Widget->AddToViewport();
+	}
+	if (Shield_And_Armor_Widget_Class != nullptr)
+	{
+		Shield_Armor_Widget = CreateWidget<UUserWidget>(GetWorld(),Shield_And_Armor_Widget_Class);
+		Shield_Armor_Widget->AddToViewport();
+	}
+	if (Restart_Widget_Class != nullptr)
+	{
+		Restart_Widget = CreateWidget<UUserWidget>(GetWorld(),Restart_Widget_Class);
+		Restart_Widget->AddToViewport();
+
+		Restart_Widget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	PC_Ref = GetWorld()->GetFirstPlayerController();
 }
 
 void ASS_GameMode::Tick(float DeltaSeconds)

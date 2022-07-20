@@ -68,7 +68,7 @@ void AProjectile::OnBeginOverlap(AActor* ProjectileActor, AActor* OtherActor)
 
 			bHit = true;
 		}
-		
+
 		if (OtherActor->ActorHasTag(FName("Asteroid")))
 		{
 			if (OwningPlayer)

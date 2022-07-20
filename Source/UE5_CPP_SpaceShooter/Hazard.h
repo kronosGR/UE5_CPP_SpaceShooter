@@ -11,8 +11,8 @@ UCLASS()
 class UE5_CPP_SPACESHOOTER_API AHazard : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AHazard();
 
@@ -20,17 +20,17 @@ public:
 	void SetHazardVelocity(FVector NewVelocity);
 
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent * StaticMesh;
-	
+	UStaticMeshComponent* StaticMesh;
+
 	UPROPERTY(EditAnywhere)
 	UCapsuleComponent* CollisionComponent;
-	
+
 	UPROPERTY(EditAnywhere)
 	UAudioComponent* AsteroidExplosionSound;
-	
+
 	UPROPERTY(EditAnywhere)
 	UParticleSystemComponent* AsteroidExplosionFX;
-	
+
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AHazard> ChildSpawn;
 
@@ -51,14 +51,13 @@ public:
 
 	bool bHit;
 	bool bStartDestroyTimer;
-	
-	
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 };

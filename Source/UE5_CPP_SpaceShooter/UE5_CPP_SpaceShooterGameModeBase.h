@@ -13,5 +13,4 @@ UCLASS()
 class UE5_CPP_SPACESHOOTER_API AUE5_CPP_SpaceShooterGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
 };
